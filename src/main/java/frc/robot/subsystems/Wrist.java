@@ -25,10 +25,11 @@ public class Wrist extends SubsystemBase {
   public Wrist() {
     wristMotor = new SparkMax(Constants.Wrist.wristMotorID, MotorType.kBrushless);
     SparkMaxConfig wristConfig = new SparkMaxConfig();
-    wristConfig.idleMode(IdleMode.kBrake).closedLoop.pidf(0.5, 0, 0, .1).outputRange(-0.3, 0.3);
+    wristConfig.idleMode(IdleMode.kBrake);
+    wristConfig.closedLoop.pidf(0.5, 0, 0, .1).outputRange(-0.3, 0.3);
+    // wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     wristMotor.configure(
         wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // wristMotor.getEncoder().setPosition(0);
 
     spinMotor = new SparkMax(Constants.Wrist.spinMotorID, MotorType.kBrushless);
     SparkMaxConfig spinConfig = new SparkMaxConfig();
@@ -66,6 +67,7 @@ public class Wrist extends SubsystemBase {
     // wristMotor.set(PIDpower);
 
     Logger.recordOutput("Wrist/PivotPosition", getPosition());
+    Logger.recordOutput("Wrist/PivotAbsPosition", wristMotor.getAbsoluteEncoder().getPosition());
     Logger.recordOutput("Wrist/PivotPower", PIDpower);
     Logger.recordOutput("Wrist/PivotTargetPos", targetPos);
     Logger.recordOutput("Wrist/PivotCurrent", wristMotor.getOutputCurrent());
