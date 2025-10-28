@@ -274,8 +274,6 @@ public class ModuleIOSpark implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
-
-    Logger.recordOutput("AbsolutePos", getAbsoluteTurnPosition());
   }
 
   @Override
