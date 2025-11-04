@@ -42,8 +42,6 @@ public class OI {
     return primaryController.a(eventLoop).getAsBoolean();
   }
 
- 
-
   public static void update() {
     eventLoop.poll();
   }
