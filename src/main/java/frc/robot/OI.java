@@ -8,6 +8,16 @@ public class OI {
   private static EventLoop eventLoop = new EventLoop();
   private static XboxController primaryController = new XboxController(0);
 
+  public static class Drive {
+    public static BooleanEvent rezeroGyro() {
+      return primaryController.back(eventLoop);
+    }
+
+    public static BooleanEvent stopWithX() {
+      return primaryController.x(eventLoop);
+    }
+  }
+
   public static boolean spinInPower() {
     return primaryController.rightBumper(eventLoop).getAsBoolean();
   }
@@ -32,13 +42,7 @@ public class OI {
     return primaryController.a(eventLoop).getAsBoolean();
   }
 
-  public static BooleanEvent downUpMiddle() {
-    return primaryController.x(eventLoop);
-  }
-
-  public static BooleanEvent rezeroGyro() {
-    return primaryController.back(eventLoop);
-  }
+ 
 
   public static void update() {
     eventLoop.poll();
