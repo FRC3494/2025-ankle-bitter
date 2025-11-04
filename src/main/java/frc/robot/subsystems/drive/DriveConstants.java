@@ -9,6 +9,7 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -40,8 +41,7 @@ public class DriveConstants {
   public static final Rotation2d backRightZeroRotation = new Rotation2d(2.293);
 
   // Device CAN IDs
-  // ! No pigeon exists
-  public static final int pigeonCanId = 9;
+  public static final int pigeonCanId = 20;
 
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 15;

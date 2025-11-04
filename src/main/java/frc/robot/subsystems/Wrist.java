@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -9,11 +7,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.OI;
+import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
   public SparkMax wristMotor;

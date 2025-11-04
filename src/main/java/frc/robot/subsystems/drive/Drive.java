@@ -39,6 +39,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -48,8 +50,8 @@ import org.littletonrobotics.junction.Logger;
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
   // ! GYRO
-  // private final GyroIO gyroIO;
-  // private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+  private final GyroIO gyroIO;
+  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
   private final Alert gyroDisconnectedAlert =
@@ -69,10 +71,13 @@ public class Drive extends SubsystemBase {
 
   public Drive(
       // ! GYRO
-      // GyroIO gyroIO,
-      ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO blModuleIO, ModuleIO brModuleIO) {
+      GyroIO gyroIO,
+      ModuleIO flModuleIO,
+      ModuleIO frModuleIO,
+      ModuleIO blModuleIO,
+      ModuleIO brModuleIO) {
     // ! GYRO
-    // this.gyroIO = gyroIO;
+    this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -122,8 +127,8 @@ public class Drive extends SubsystemBase {
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
     // ! GYRO
-    // gyroIO.updateInputs(gyroInputs);
-    // Logger.processInputs("Drive/Gyro", gyroInputs);
+    gyroIO.updateInputs(gyroInputs);
+    Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
     }
@@ -162,10 +167,10 @@ public class Drive extends SubsystemBase {
 
       // ! GYRO
       // Update gyro angle
-      // if (gyroInputs.connected) {
-      if (false) {
+      if (gyroInputs.connected) {
+        // if (false) {
         // Use the real gyro angle
-        // rawGyroRotation = gyroInputs.odometryYawPositions[i];
+        rawGyroRotation = gyroInputs.odometryYawPositions[i];
       } else {
         // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
@@ -178,7 +183,7 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     // ! GYRO
-    // gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
 
   /**

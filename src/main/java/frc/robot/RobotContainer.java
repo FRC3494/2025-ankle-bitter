@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -22,9 +19,12 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,7 +51,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 // ! GYRO
-                // new GyroIOPigeon2(),
+                new GyroIOPigeon2(),
                 new ModuleIOSpark(0),
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
@@ -63,8 +63,11 @@ public class RobotContainer {
         drive =
             new Drive(
                 // ! GYRO
-                // new GyroIO() {},
-                new ModuleIOSim(), new ModuleIOSim(), new ModuleIOSim(), new ModuleIOSim());
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
         break;
 
       default:
@@ -72,8 +75,11 @@ public class RobotContainer {
         drive =
             new Drive(
                 // ! GYRO
-                // new GyroIO() {},
-                new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {});
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         break;
     }
 
