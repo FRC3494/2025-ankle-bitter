@@ -123,6 +123,13 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
+    OI.rezeroGyro()
+        .rising()
+        .ifHigh(
+            () -> {
+              drive.rezeroGyro();
+            });
+
     // Lock to 0° when A button is held
     controller
         .a()

@@ -330,4 +330,8 @@ public class Drive extends SubsystemBase {
       module.rezeroTurnEncoder();
     }
   }
+
+  public void rezeroGyro() {
+    gyroIO.rezeroYaw();
+  }
 }

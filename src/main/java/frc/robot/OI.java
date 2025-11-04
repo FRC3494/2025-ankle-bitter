@@ -36,6 +36,10 @@ public class OI {
     return primaryController.x(eventLoop);
   }
 
+  public static BooleanEvent rezeroGyro() {
+    return primaryController.back(eventLoop);
+  }
+
   public static void update() {
     eventLoop.poll();
   }
