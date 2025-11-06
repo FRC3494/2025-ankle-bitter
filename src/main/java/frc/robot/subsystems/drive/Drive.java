@@ -317,12 +317,26 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return maxSpeedMetersPerSec;
+    switch (Constants.driveMode) {
+      case DEMO -> {
+        return maxSpeedMetersPerSec * 0.1;
+      }
+      default -> {
+        return maxSpeedMetersPerSec;
+      }
+    }
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return maxSpeedMetersPerSec / driveBaseRadius;
+    switch (Constants.driveMode) {
+      case DEMO -> {
+        return (maxSpeedMetersPerSec / driveBaseRadius) * 0.1;
+      }
+      default -> {
+        return maxSpeedMetersPerSec / driveBaseRadius;
+      }
+    }
   }
 
   public void rezeroTurnEncoders() {

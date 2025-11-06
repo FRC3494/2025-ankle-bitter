@@ -29,6 +29,13 @@ public final class Constants {
     REPLAY
   }
 
+  public static final DriveMode driveMode = DriveMode.NORMAL;
+
+  public static enum DriveMode {
+    NORMAL,
+    DEMO
+  };
+
   public static class Wrist {
     public static final int wristMotorID = 4;
     public static final int spinMotorID = 13;
