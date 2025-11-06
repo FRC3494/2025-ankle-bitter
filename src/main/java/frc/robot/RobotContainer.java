@@ -135,6 +135,20 @@ public class RobotContainer {
             () -> {
               Commands.runOnce(drive::stopWithX, drive);
             });
+
+    OI.rezeroWrist()
+        .rising()
+        .ifHigh(
+            () -> {
+              wrist.setSoftLimits(false);
+            });
+    OI.rezeroWrist()
+        .falling()
+        .ifHigh(
+            () -> {
+              wrist.rezeroWrist();
+              wrist.setSoftLimits(true);
+            });
   }
 
   /**

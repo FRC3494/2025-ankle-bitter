@@ -20,6 +20,8 @@ public class Wrist extends SubsystemBase {
   public double spinPower = 0.0;
   public double targetPos = 0;
 
+  private boolean softLimitsEnabled = true;
+
   public Wrist() {
     wristMotor = new SparkMax(Constants.Wrist.wristMotorID, MotorType.kBrushless);
     SparkMaxConfig wristConfig = new SparkMaxConfig();
@@ -56,7 +58,9 @@ public class Wrist extends SubsystemBase {
     } else if (OI.upPreset()) {
       targetPos = Constants.Wrist.upPreset;
     }
-    targetPos = MathUtil.clamp(targetPos, 0, 30);
+    if (softLimitsEnabled) {
+      targetPos = MathUtil.clamp(targetPos, 0, 30);
+    }
     wristMotor.getClosedLoopController().setReference(targetPos, ControlType.kPosition);
     double error = targetPos - wristMotor.getEncoder().getPosition();
     double kP = 1;
@@ -78,5 +82,13 @@ public class Wrist extends SubsystemBase {
 
   public double getPosition() {
     return wristMotor.getEncoder().getPosition();
+  }
+
+  public void setSoftLimits(boolean enabled) {
+    softLimitsEnabled = enabled;
+  }
+
+  public void rezeroWrist() {
+    wristMotor.getEncoder().setPosition(0);
   }
 }

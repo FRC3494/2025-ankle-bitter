@@ -42,6 +42,10 @@ public class OI {
     return primaryController.a(eventLoop).getAsBoolean();
   }
 
+  public static BooleanEvent rezeroWrist() {
+    return primaryController.start(eventLoop);
+  }
+
   public static void update() {
     eventLoop.poll();
   }
