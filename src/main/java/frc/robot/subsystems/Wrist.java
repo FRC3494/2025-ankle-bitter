@@ -74,6 +74,9 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/PivotTargetPos", targetPos);
     Logger.recordOutput("Wrist/PivotCurrent", wristMotor.getOutputCurrent());
     Logger.recordOutput("Wrist/SpinSpeed", spinMotor.getAppliedOutput());
+
+    Logger.recordOutput("Wrist/PivotTemp", wristMotor.getMotorTemperature());
+    Logger.recordOutput("Wrist/SpinTemp", spinMotor.getMotorTemperature());
   }
 
   public void setTarget(double targetPos) {
