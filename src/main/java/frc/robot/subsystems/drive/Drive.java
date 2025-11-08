@@ -319,7 +319,7 @@ public class Drive extends SubsystemBase {
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return maxSpeedMetersPerSec * 0.1;
+        return maxSpeedMetersPerSec * 0.15;
       }
       default -> {
         return maxSpeedMetersPerSec;
@@ -331,7 +331,7 @@ public class Drive extends SubsystemBase {
   public double getMaxAngularSpeedRadPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return (maxSpeedMetersPerSec / driveBaseRadius) * 0.1;
+        return (maxSpeedMetersPerSec / driveBaseRadius) * 0.15;
       }
       default -> {
         return maxSpeedMetersPerSec / driveBaseRadius;
