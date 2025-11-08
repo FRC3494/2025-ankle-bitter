@@ -46,6 +46,10 @@ public class OI {
     return primaryController.start(eventLoop);
   }
 
+  public static BooleanEvent rezeroSwerveTurn() {
+    return primaryController.povLeft(eventLoop);
+  }
+
   public static void update() {
     eventLoop.poll();
   }

@@ -149,6 +149,13 @@ public class RobotContainer {
               wrist.rezeroWrist();
               wrist.setSoftLimits(true);
             });
+
+    OI.rezeroSwerveTurn()
+        .rising()
+        .ifHigh(
+            () -> {
+              drive.rezeroTurnEncoders();
+            });
   }
 
   /**
