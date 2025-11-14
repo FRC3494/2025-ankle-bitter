@@ -9,13 +9,30 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
+/*
+ ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
+
+ * maxAngularSpeedFactor
+    - Units: rad/sec
+    - Divide max rotation speed when driving by max rotation speed while stationary
+
+ * pigeonYawPositionFactor
+    - Units: Unit: rad
+    - Divide measured yaw from Pigeon after 30 turns by expected reading after 30 turns
+ */
+
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
+  public static final double maxAngularSpeedFactor =
+      (5.260940647
+          / 9.872055517); // Max rotation speed (Rad/Sec) while moving / Max rotation speed while
+  // stationary
   public static final double odometryFrequency = 100.0; // Hz
   public static final double trackWidth = Units.inchesToMeters(26.5);
   public static final double wheelBase = Units.inchesToMeters(26.5);
@@ -101,7 +118,8 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   // Pigeon configuration
-  public static final double pigeonYawPositionFactor = (187.3434 / (30 * 2 * Math.PI)); // Radians
+  public static final double pigeonYawPositionFactor =
+      (187.3434 / (30 * 2 * Math.PI)); // Measured yaw (rad) after 30 turns / 30 turns
 
   // PathPlanner configuration
   public static final double robotMassKg = 74.088;

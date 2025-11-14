@@ -9,6 +9,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.drive.DriveConstants.driveBaseRadius;
+import static frc.robot.subsystems.drive.DriveConstants.maxAngularSpeedFactor;
 import static frc.robot.subsystems.drive.DriveConstants.maxSpeedMetersPerSec;
 import static frc.robot.subsystems.drive.DriveConstants.moduleTranslations;
 import static frc.robot.subsystems.drive.DriveConstants.ppConfig;
@@ -329,14 +330,13 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    switch (Constants.driveMode) {
-      case DEMO -> {
-        return (maxSpeedMetersPerSec / driveBaseRadius) * 0.15;
-      }
-      default -> {
-        return maxSpeedMetersPerSec / driveBaseRadius;
-      }
-    }
+    double speed =
+        switch (Constants.driveMode) {
+          case DEMO -> (maxSpeedMetersPerSec / driveBaseRadius) * 0.15;
+          default -> maxSpeedMetersPerSec / driveBaseRadius;
+        };
+
+    return speed * maxAngularSpeedFactor;
   }
 
   public void rezeroTurnEncoders() {
