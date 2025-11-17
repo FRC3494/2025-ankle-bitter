@@ -13,6 +13,10 @@ public class OI {
       return primaryController.back(eventLoop);
     }
 
+    public static BooleanEvent rezeroSwerveTurn() {
+      return primaryController.povLeft(eventLoop);
+    }
+
     public static BooleanEvent stopWithX() {
       return primaryController.x(eventLoop);
     }
@@ -44,10 +48,6 @@ public class OI {
 
   public static BooleanEvent rezeroWrist() {
     return primaryController.start(eventLoop);
-  }
-
-  public static BooleanEvent rezeroSwerveTurn() {
-    return primaryController.povLeft(eventLoop);
   }
 
   public static void update() {

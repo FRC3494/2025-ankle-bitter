@@ -346,6 +346,6 @@ public class Drive extends SubsystemBase {
   }
 
   public void rezeroGyro() {
-    gyroIO.rezeroYaw();
+    poseEstimator.resetRotation(Rotation2d.kZero);
   }
 }

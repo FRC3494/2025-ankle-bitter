@@ -128,6 +128,13 @@ public class RobotContainer {
               drive.rezeroGyro();
             });
 
+    OI.Drive.rezeroSwerveTurn()
+        .rising()
+        .ifHigh(
+            () -> {
+              drive.rezeroTurnEncoders();
+            });
+
     // Switch to X pattern when X button is pressed
     OI.Drive.stopWithX()
         .rising()
@@ -148,13 +155,6 @@ public class RobotContainer {
             () -> {
               wrist.rezeroWrist();
               wrist.setSoftLimits(true);
-            });
-
-    OI.rezeroSwerveTurn()
-        .rising()
-        .ifHigh(
-            () -> {
-              drive.rezeroTurnEncoders();
             });
   }
 

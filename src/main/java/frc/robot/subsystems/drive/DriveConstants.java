@@ -9,23 +9,22 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 /*
- ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
+! Things that need to be configured in addition to AdvantageKit Swerve Template configs
 
- * maxAngularSpeedFactor
-    - Units: rad/sec
-    - Divide max rotation speed when driving by max rotation speed while stationary
+* maxAngularSpeedFactor
+   - Units: rad/sec
+   - Divide max rotation speed when driving by max rotation speed while stationary
 
- * pigeonYawPositionFactor
-    - Units: Unit: rad
-    - Divide measured yaw from Pigeon after 30 turns by expected reading after 30 turns
- */
+* pigeonYawPositionFactor
+   - Units: Unit: rad
+   - Divide measured yaw from Pigeon after 30 turns by expected reading after 30 turns
+*/
 
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
