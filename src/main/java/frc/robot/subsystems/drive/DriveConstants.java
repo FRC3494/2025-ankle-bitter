@@ -136,4 +136,8 @@ public class DriveConstants {
               driveMotorCurrentLimit,
               1),
           moduleTranslations);
+
+  // Auto config
+  public static final double autoLinearKp = 3.5;
+  public static final double autoAngularKp = 7.0;
 }

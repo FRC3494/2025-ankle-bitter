@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import java.text.DecimalFormat;
@@ -290,5 +292,104 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
+  }
+
+  public static Command turnSpeedCharacterization(Drive drive) {
+    TurnSpeedCharacterizationState state = new TurnSpeedCharacterizationState();
+    Timer timer = new Timer();
+
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              drive.rezeroGyro();
+            }),
+
+        // Wait until spinning at max speed
+        Commands.deadline(
+            new WaitUntilCommand(
+                () ->
+                    Math.abs(
+                            drive.getChassisSpeeds().omegaRadiansPerSecond
+                                - drive.getMaxAngularSpeedRadPerSec())
+                        < 0.1),
+            Commands.run(
+                () -> {
+                  drive.runVelocity(
+                      new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                })),
+
+        // Measure rotation speed of robot while moving
+        Commands.parallel(
+            Commands.sequence(
+                new WaitCommand(0.5),
+                Commands.run(
+                    () -> {
+                      state.movingStartAngle = drive.getRotation().getRadians();
+                      timer.restart();
+                    })),
+            Commands.run(
+                    () -> {
+                      drive.runVelocity(
+                          ChassisSpeeds.fromFieldRelativeSpeeds(
+                              drive.getMaxLinearSpeedMetersPerSec(),
+                              0,
+                              drive.getMaxAngularSpeedRadPerSec(),
+                              drive.getRotation()));
+                    })
+                .withTimeout(1.0)
+                .finallyDo(
+                    () -> {
+                      state.movingRotationSpeed =
+                          (drive.getRotation().getRadians() - state.movingStartAngle) / timer.get();
+                    })),
+
+        // Wait until spinning in place at max speed
+        Commands.deadline(
+                new WaitUntilCommand(
+                    () ->
+                        Math.abs(
+                                drive.getChassisSpeeds().omegaRadiansPerSecond
+                                    - drive.getMaxAngularSpeedRadPerSec())
+                            < 0.1),
+                Commands.run(
+                    () -> {
+                      drive.runVelocity(
+                          new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                    }))
+            .finallyDo(
+                () -> {
+                  state.stationaryStartAngle = drive.getRotation().getRadians();
+                  timer.restart();
+                }),
+
+        // Measure rotation speed of robot while stationary
+        new WaitCommand(5)
+            .finallyDo(
+                () -> {
+                  state.stationaryRotationSpeed =
+                      (drive.getRotation().getRadians() - state.stationaryStartAngle) / timer.get();
+                }),
+
+        // Stop driving and output values
+        Commands.runOnce(
+            () -> {
+              drive.stop();
+
+              NumberFormat formatter = new DecimalFormat("#0.00000");
+              System.out.println("********** Turn Speed Characterization Results **********");
+              System.out.println(
+                  "\tRotation speed while moving: " + formatter.format(state.movingRotationSpeed));
+              System.out.println(
+                  "\tRotation speed while stationary: "
+                      + formatter.format(state.stationaryRotationSpeed));
+            }));
+  }
+
+  private static class TurnSpeedCharacterizationState {
+    double movingStartAngle = 0.0;
+    double movingRotationSpeed = 0.0;
+
+    double stationaryStartAngle = 0.0;
+    double stationaryRotationSpeed = 0.0;
   }
 }
