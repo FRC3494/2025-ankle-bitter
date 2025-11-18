@@ -7,6 +7,13 @@
 
 package frc.robot.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -26,12 +33,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
@@ -391,5 +392,14 @@ public class DriveCommands {
 
     double stationaryStartAngle = 0.0;
     double stationaryRotationSpeed = 0.0;
+  }
+
+  public static Command turnErrorCharacterization(Drive drive) {
+    return Commands.deadline(
+        new WaitUntilCommand(() -> drive.getRawRotation().getRadians() > (30 * 2 * Math.PI)),
+        Commands.run(
+            () -> {
+              drive.runVelocity(new ChassisSpeeds(0, 0, 0.5 * drive.getMaxAngularSpeedRadPerSec()));
+            }));
   }
 }
