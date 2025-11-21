@@ -9,6 +9,7 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -118,7 +119,7 @@ public class DriveConstants {
 
   // Pigeon configuration
   public static final double pigeonYawPositionFactor =
-      (187.3434 / (30 * 2 * Math.PI)); // Measured yaw (rad) after 30 turns / 30 turns
+      ((21 * 2 * Math.PI + -1.2856) / (21 * 2 * Math.PI)); // Measured yaw (rad) after # of turns / # of turns
 
   // PathPlanner configuration
   public static final double robotMassKg = 74.088;
