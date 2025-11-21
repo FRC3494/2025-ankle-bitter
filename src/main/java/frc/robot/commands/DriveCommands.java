@@ -7,13 +7,6 @@
 
 package frc.robot.commands;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -30,9 +23,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
@@ -297,38 +296,30 @@ public class DriveCommands {
 
   public static Command turnSpeedCharacterization(Drive drive) {
     TurnSpeedCharacterizationState state = new TurnSpeedCharacterizationState();
-    Timer timer = new Timer();
+
+    double ROTATION_SPEED_MARGIN = 3;
 
     return Commands.sequence(
-        Commands.runOnce(
-            () -> {
-              drive.rezeroGyro();
-            }),
-
         // Wait until spinning at max speed
         Commands.deadline(
-            new WaitUntilCommand(
+            Commands.waitUntil(
                 () ->
                     Math.abs(
                             drive.getChassisSpeeds().omegaRadiansPerSecond
                                 - drive.getMaxAngularSpeedRadPerSec())
-                        < 0.1),
+                        < ROTATION_SPEED_MARGIN),
             Commands.run(
                 () -> {
                   drive.runVelocity(
                       new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
-                })),
+                },
+                drive)),
 
         // Measure rotation speed of robot while moving
-        Commands.parallel(
-            Commands.sequence(
-                new WaitCommand(0.5),
+        Commands.sequence(
+            Commands.race(
+                Commands.waitSeconds(2.5),
                 Commands.run(
-                    () -> {
-                      state.movingStartAngle = drive.getRotation().getRadians();
-                      timer.restart();
-                    })),
-            Commands.run(
                     () -> {
                       drive.runVelocity(
                           ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -336,62 +327,74 @@ public class DriveCommands {
                               0,
                               drive.getMaxAngularSpeedRadPerSec(),
                               drive.getRotation()));
-                    })
-                .withTimeout(1.0)
-                .finallyDo(
+                    },
+                    drive),
+                Commands.run(
                     () -> {
-                      state.movingRotationSpeed =
-                          (drive.getRotation().getRadians() - state.movingStartAngle) / timer.get();
-                    })),
+                      state.movingRotationSpeeds.add(drive.getYawVelocityRadPerSec());
+                    }))),
 
         // Wait until spinning in place at max speed
         Commands.deadline(
-                new WaitUntilCommand(
-                    () ->
-                        Math.abs(
-                                drive.getChassisSpeeds().omegaRadiansPerSecond
-                                    - drive.getMaxAngularSpeedRadPerSec())
-                            < 0.1),
+            Commands.waitUntil(
+                () ->
+                    Math.abs(
+                            drive.getChassisSpeeds().omegaRadiansPerSecond
+                                - drive.getMaxAngularSpeedRadPerSec())
+                        < ROTATION_SPEED_MARGIN),
+            Commands.run(
+                () -> {
+                  drive.runVelocity(
+                      new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                },
+                drive)),
+
+        // Measure rotation speed of robot while stationary
+        Commands.race(
+                Commands.waitSeconds(5),
                 Commands.run(
                     () -> {
                       drive.runVelocity(
                           new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                    },
+                    drive),
+                Commands.run(
+                    () -> {
+                      state.stationaryRotationSpeeds.add(drive.getYawVelocityRadPerSec());
                     }))
             .finallyDo(
                 () -> {
-                  state.stationaryStartAngle = drive.getRotation().getRadians();
-                  timer.restart();
-                }),
-
-        // Measure rotation speed of robot while stationary
-        new WaitCommand(5)
-            .finallyDo(
-                () -> {
-                  state.stationaryRotationSpeed =
-                      (drive.getRotation().getRadians() - state.stationaryStartAngle) / timer.get();
+                  drive.stop();
                 }),
 
         // Stop driving and output values
         Commands.runOnce(
             () -> {
-              drive.stop();
+              double movingAverageSpeed = 0.0;
+              for (double speed : state.movingRotationSpeeds) {
+                movingAverageSpeed += speed;
+              }
+              movingAverageSpeed /= state.movingRotationSpeeds.size();
+
+              double stationaryAverageSpeed = 0.0;
+              for (double speed : state.stationaryRotationSpeeds) {
+                stationaryAverageSpeed += speed;
+              }
+              stationaryAverageSpeed /= state.stationaryRotationSpeeds.size();
 
               NumberFormat formatter = new DecimalFormat("#0.00000");
               System.out.println("********** Turn Speed Characterization Results **********");
               System.out.println(
-                  "\tRotation speed while moving: " + formatter.format(state.movingRotationSpeed));
+                  "\tRotation speed while moving: " + formatter.format(movingAverageSpeed));
               System.out.println(
-                  "\tRotation speed while stationary: "
-                      + formatter.format(state.stationaryRotationSpeed));
-            }));
+                  "\tRotation speed while stationary: " + formatter.format(stationaryAverageSpeed));
+            },
+            drive));
   }
 
   private static class TurnSpeedCharacterizationState {
-    double movingStartAngle = 0.0;
-    double movingRotationSpeed = 0.0;
-
-    double stationaryStartAngle = 0.0;
-    double stationaryRotationSpeed = 0.0;
+    ArrayList<Double> movingRotationSpeeds = new ArrayList<Double>();
+    ArrayList<Double> stationaryRotationSpeeds = new ArrayList<Double>();
   }
 
   public static Command turnErrorCharacterization(Drive drive) {

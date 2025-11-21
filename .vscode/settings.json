@@ -57,5 +57,6 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*"
   ],
-  "cSpell.words": ["Debouncer", "debouncers", "javax", "Littleton"]
+  "cSpell.words": ["Debouncer", "debouncers", "javax", "Littleton"],
+  "wpilib.selectDefaultSimulateExtension": true
 }
