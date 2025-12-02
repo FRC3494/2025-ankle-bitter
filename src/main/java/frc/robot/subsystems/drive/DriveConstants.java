@@ -69,7 +69,7 @@ public class DriveConstants {
   // Drive motor configuration
   public static final boolean driveInverted = false;
   public static final int driveMotorCurrentLimit = 50;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.5);
+  public static final double wheelRadiusMeters = Units.inchesToMeters(1.9);
   public static final double driveMotorReduction =
       (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2
   // Gearing
