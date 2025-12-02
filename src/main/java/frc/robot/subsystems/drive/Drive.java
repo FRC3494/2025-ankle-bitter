@@ -379,6 +379,11 @@ public class Drive extends SubsystemBase {
   }
 
   public void rezeroGyro() {
-    poseEstimator.resetRotation(Rotation2d.kZero);
+    if (DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+    } else {
+      poseEstimator.resetRotation(Rotation2d.kZero);
+    }
   }
 }
