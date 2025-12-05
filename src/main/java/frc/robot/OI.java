@@ -1,23 +1,23 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class OI {
   private static EventLoop eventLoop = new EventLoop();
-  private static XboxController primaryController = new XboxController(0);
+  private static CommandXboxController primaryController = new CommandXboxController(0);
 
   public static class Drive {
-    public static BooleanEvent rezeroGyro() {
+    public static Trigger rezeroGyro() {
       return primaryController.back(eventLoop);
     }
 
-    public static BooleanEvent rezeroSwerveTurn() {
-      return primaryController.povLeft(eventLoop);
+    public static Trigger rezeroSwerveTurn() {
+      return primaryController.povLeft();
     }
 
-    public static BooleanEvent stopWithX() {
+    public static Trigger stopWithX() {
       return primaryController.x(eventLoop);
     }
   }
@@ -46,7 +46,7 @@ public class OI {
     return primaryController.a(eventLoop).getAsBoolean();
   }
 
-  public static BooleanEvent rezeroWrist() {
+  public static Trigger rezeroWrist() {
     return primaryController.start(eventLoop);
   }
 

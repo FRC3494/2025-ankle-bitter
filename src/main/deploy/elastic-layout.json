@@ -34,6 +34,19 @@
               "red_start_time": 15,
               "yellow_start_time": 30
             }
+          },
+          {
+            "title": "StopWithX",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Buttons/StopWithX",
+              "period": 0.06,
+              "show_type": true
+            }
           }
         ]
       }

@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -125,41 +126,26 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    OI.Drive.rezeroGyro()
-        .rising()
-        .ifHigh(
-            () -> {
-              drive.rezeroGyro();
-            });
+    OI.Drive.rezeroGyro().onTrue(Commands.runOnce(drive::rezeroGyro, drive));
 
-    OI.Drive.rezeroSwerveTurn()
-        .rising()
-        .ifHigh(
-            () -> {
-              drive.rezeroTurnEncoders();
-            });
+    OI.Drive.rezeroSwerveTurn().onTrue(Commands.runOnce(drive::rezeroTurnEncoders, drive));
 
     // Switch to X pattern when X button is pressed
-    OI.Drive.stopWithX()
-        .rising()
-        .ifHigh(
-            () -> {
-              Commands.runOnce(drive::stopWithX, drive);
-            });
+    OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    SmartDashboard.putData("Buttons/StopWithX", Commands.runOnce(drive::stopWithX, drive));
 
     OI.rezeroWrist()
-        .rising()
-        .ifHigh(
-            () -> {
-              wrist.setSoftLimits(false);
-            });
-    OI.rezeroWrist()
-        .falling()
-        .ifHigh(
-            () -> {
-              wrist.rezeroWrist();
-              wrist.setSoftLimits(true);
-            });
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  wrist.setSoftLimits(false);
+                }))
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  wrist.rezeroWrist();
+                  wrist.setSoftLimits(true);
+                }));
   }
 
   /**
