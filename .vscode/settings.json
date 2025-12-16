@@ -58,11 +58,14 @@
     "edu.wpi.first.math.**.struct.*"
   ],
   "cSpell.words": [
+    "choreo",
     "Debouncer",
     "debouncers",
+    "gson",
     "javax",
     "Littleton",
-    "Teleoperated"
+    "Teleoperated",
+    "Uncomitted"
   ],
   "wpilib.selectDefaultSimulateExtension": true
 }
