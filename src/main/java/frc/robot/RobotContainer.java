@@ -7,13 +7,14 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
+import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Wrist;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.util.Elastic;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,8 +40,9 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  // Choreo auto chooser
+  private final AutoChooser autoChooser;
+  Autos autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -85,27 +87,39 @@ public class RobotContainer {
     wrist = new Wrist();
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser = new AutoChooser();
+    autos = new Autos(drive);
+
+    autoChooser.addRoutine("Odometry Test", autos::odometryTest);
+
+    autoChooser.addCmd("===============", Commands::none);
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
+    autoChooser.addCmd(
+        "Drive Wheel Radius Characterization",
+        () -> DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addCmd(
+        "Drive Simple FF Characterization", () -> DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addCmd(
         "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+        () -> drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
         "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive Turn Speed Characterization", DriveCommands.turnSpeedCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Turn Error Characterization", DriveCommands.turnErrorCharacterization(drive));
+        () -> drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Drive SysId (Dynamic Forward)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Drive SysId (Dynamic Reverse)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Drive Turn Speed Characterization", () -> DriveCommands.turnSpeedCharacterization(drive));
+    autoChooser.addCmd(
+        "Drive Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
+
+    SmartDashboard.putData(autoChooser);
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> Elastic.selectTab("Autonomous")));
+    RobotModeTriggers.teleop().onTrue(Commands.runOnce(() -> Elastic.selectTab("Teleoperated")));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -154,6 +168,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return autoChooser.selectedCommand();
   }
 }

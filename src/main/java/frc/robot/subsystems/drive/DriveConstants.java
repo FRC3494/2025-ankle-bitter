@@ -31,8 +31,8 @@ public class DriveConstants {
   // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
   public static final double maxAngularSpeedFactor = (5.48598 / 9.52601);
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(26.5);
-  public static final double wheelBase = Units.inchesToMeters(26.5);
+  public static final double trackWidth = Units.inchesToMeters(22);
+  public static final double wheelBase = Units.inchesToMeters(22);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
