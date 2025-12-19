@@ -91,6 +91,8 @@ public class RobotContainer {
     autos = new Autos(drive);
 
     autoChooser.addRoutine("Odometry Test", autos::odometryTest);
+    autoChooser.addRoutine("Odometry Test 2", autos::odometryTest2);
+    autoChooser.addCmd("Odometry Test 2 Command", autos::odometryTest2Cmd);
 
     autoChooser.addCmd("===============", Commands::none);
 
@@ -115,7 +117,7 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Drive Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
 
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> Elastic.selectTab("Autonomous")));
