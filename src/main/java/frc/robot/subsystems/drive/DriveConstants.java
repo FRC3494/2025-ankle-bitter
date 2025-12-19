@@ -138,6 +138,6 @@ public class DriveConstants {
           moduleTranslations);
 
   // Auto config
-  public static final double autoLinearKp = 3.5;
-  public static final double autoAngularKp = 7.0;
+  public static final double autoLinearKp = 10.0;
+  public static final double autoAngularKp = 7.5;
 }
