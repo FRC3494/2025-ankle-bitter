@@ -65,6 +65,7 @@
     "javax",
     "Littleton",
     "Teleoperated",
+    "traj",
     "Uncomitted"
   ],
   "wpilib.selectDefaultSimulateExtension": true
