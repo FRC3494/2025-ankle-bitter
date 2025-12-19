@@ -221,9 +221,7 @@ public class ModuleIOSpark implements ModuleIO {
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
         SparkOdometryThread.getInstance()
-            .registerSignal(
-                turnSpark,
-                () -> turnRelativeEncoder.getPosition() / DriveConstants.turnMotorReduction);
+            .registerSignal(turnSpark, () -> getTurnPosition().getRadians());
   }
 
   @Override
@@ -256,7 +254,7 @@ public class ModuleIOSpark implements ModuleIO {
     ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
     inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
     inputs.relativeRotationOffset = relativeEncoderOffset;
-    inputs.rawRelativeTurnPosition = new Rotation2d(turnRelativeEncoder.getPosition());
+    inputs.rawRelativeTurnPosition = Rotation2d.fromRadians(turnRelativeEncoder.getPosition());
     inputs.rawAbsoluteTurnPosition = getRawAbsoluteTurnPosition();
     inputs.absoluteTurnPosition = getAbsoluteTurnPosition();
 
@@ -267,7 +265,7 @@ public class ModuleIOSpark implements ModuleIO {
         drivePositionQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
-            .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
+            .map((Double value) -> Rotation2d.fromRadians(value))
             .toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();
