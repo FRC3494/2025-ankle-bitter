@@ -9,7 +9,6 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -35,7 +34,8 @@ public class DriveConstants {
   public static final double trackWidth = Units.inchesToMeters(22);
   public static final double wheelBase = Units.inchesToMeters(22);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.57); //TODO: between 1.53 and 1.57
+  public static final double wheelRadiusMeters =
+      Units.inchesToMeters(1.57); // TODO: between 1.53 and 1.57
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
         new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
@@ -99,7 +99,7 @@ public class DriveConstants {
   // Turn motor configuration
   public static final boolean turnInverted = true;
   public static final int turnMotorCurrentLimit = 20;
-  public static final double turnMotorReduction = (10.71243561 / Math.PI);
+  public static final double turnMotorReduction = ((150.0 / 7.0) / (2.0 * Math.PI));
   public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 
   // Turn encoder configuration
