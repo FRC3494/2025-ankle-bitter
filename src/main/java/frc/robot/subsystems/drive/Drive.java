@@ -220,6 +220,8 @@ public class Drive extends SubsystemBase {
   }
 
   public void followTrajectory(SwerveSample sample) {
+    Logger.recordOutput("Odometry/TargetPose", sample.getPose());
+
     // Get the current pose of the robot
     Pose2d pose = getPose();
 
