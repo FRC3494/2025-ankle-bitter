@@ -34,8 +34,7 @@ public class DriveConstants {
   public static final double trackWidth = Units.inchesToMeters(22);
   public static final double wheelBase = Units.inchesToMeters(22);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-  public static final double wheelRadiusMeters =
-      Units.inchesToMeters(1.57); // TODO: between 1.53 and 1.57
+  public static final double wheelRadiusMeters = Units.inchesToMeters(152.0 / 96.986388);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
         new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
