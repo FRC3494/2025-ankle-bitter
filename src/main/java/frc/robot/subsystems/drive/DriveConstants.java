@@ -117,7 +117,7 @@ public class DriveConstants {
   // Pigeon configuration
   // * Measured yaw (rad) after # of turns / # of turns
   public static final double pigeonYawPositionFactor =
-      ((21 * 2 * Math.PI + -1.2856) / (21 * 2 * Math.PI));
+      ((43 * 2 * Math.PI + 2.33861709845736) / (43 * 2 * Math.PI));
 
   // PathPlanner configuration
   public static final double robotMassKg = 74.088;
