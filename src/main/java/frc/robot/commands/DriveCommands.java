@@ -294,6 +294,58 @@ public class DriveCommands {
     double gyroDelta = 0.0;
   }
 
+  public static Command linearWheelRadiusCharacterization(Drive drive) {
+    SlewRateLimiter limiter = new SlewRateLimiter(WHEEL_RADIUS_RAMP_RATE);
+    LinearWheelRadiusCharacterizationState state = new LinearWheelRadiusCharacterizationState();
+
+    return Commands.parallel(
+            // Drive control sequence
+            Commands.sequence(
+                // Reset acceleration limiter
+                Commands.runOnce(
+                    () -> {
+                      limiter.reset(0.0);
+                    }),
+
+                // Turn in place, accelerating up to full speed
+                Commands.run(
+                    () -> {
+                      double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
+                      drive.runVelocity(new ChassisSpeeds(speed, 0.0, 0.0));
+                    },
+                    drive)),
+
+            // Measurement sequence
+            Commands.sequence(
+                // Wait for modules to fully orient before starting measurement
+                Commands.waitSeconds(0.0),
+
+                // Record starting measurement
+                Commands.runOnce(
+                    () -> {
+                      state.positions = drive.getWheelRadiusCharacterizationPositions();
+                    })))
+
+        // When cancelled, calculate and print results
+        .finallyDo(
+            () -> {
+              double[] positions = drive.getWheelRadiusCharacterizationPositions();
+              double wheelDelta = 0.0;
+              for (int i = 0; i < 4; i++) {
+                wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+              }
+
+              NumberFormat formatter = new DecimalFormat("#0.000000");
+              System.out.println(
+                  "********** Linear Wheel Radius Characterization Results **********");
+              System.out.println("\tWheel Delta: " + formatter.format(wheelDelta) + " radians");
+            });
+  }
+
+  private static class LinearWheelRadiusCharacterizationState {
+    double[] positions = new double[4];
+  }
+
   public static Command turnSpeedCharacterization(Drive drive) {
     TurnSpeedCharacterizationState state = new TurnSpeedCharacterizationState();
 
