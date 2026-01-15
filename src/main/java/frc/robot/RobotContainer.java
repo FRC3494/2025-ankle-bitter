@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.ShooterPrototype;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -36,6 +37,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Wrist wrist;
+
+  private final ShooterPrototype shooterPrototype;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -85,6 +88,8 @@ public class RobotContainer {
     }
 
     wrist = new Wrist();
+
+    shooterPrototype = new ShooterPrototype();
 
     // Set up auto routines
     autoChooser = new AutoChooser();
@@ -165,6 +170,9 @@ public class RobotContainer {
                   wrist.rezeroWrist();
                   wrist.setSoftLimits(true);
                 }));
+
+    OI.Prototyping.shooterSpeedUp().onTrue(shooterPrototype.speedUp());
+    OI.Prototyping.shooterSpeedDown().onTrue(shooterPrototype.speedDown());
   }
 
   /**

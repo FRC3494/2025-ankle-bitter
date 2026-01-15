@@ -50,6 +50,16 @@ public class OI {
     return primaryController.start(eventLoop);
   }
 
+  public static class Prototyping {
+    public static Trigger shooterSpeedUp() {
+      return primaryController.povUp();
+    }
+
+    public static Trigger shooterSpeedDown() {
+      return primaryController.povDown();
+    }
+  }
+
   public static void update() {
     eventLoop.poll();
   }
